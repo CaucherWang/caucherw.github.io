@@ -2,7 +2,7 @@
 layout: wiki
 title: Vim
 categories: Vim
-description: 个人最常用的 Vim 常用操作。
+description: Vim 常用操作。
 keywords: Vim
 ---
 
@@ -27,7 +27,7 @@ keywords: Vim
 | 本单词尾（已在本词尾则跳到后一单词尾） | `e`  |
 
 **以屏幕为单位**
- 
+
 | 功能                     | 按键     |
 |:-------------------------|:---------|
 | 向下翻页                 | `CTRL-f` |
