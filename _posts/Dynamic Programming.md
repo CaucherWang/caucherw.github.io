@@ -6,5 +6,7 @@ description: 初学动态规划
 keywords: 动态规划
 ---
 
-## 还没开始学
+## Dynamic Programming
+
+- 适用环境：问题由交叠的子问题构成
 
