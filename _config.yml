@@ -2,7 +2,7 @@
 #   Main Configs   #
 # ---------------- #
 baseurl:
-url: https://caucherwang.github.io/caucherw.github.io/
+url: https://caucherwang.github.io/
 date_format: "ordinal"
 title: Yuzu 
 subtitle: "Caucher Wang's Techblog"
