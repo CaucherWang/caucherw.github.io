@@ -5,7 +5,7 @@ baseurl:
 url: https://caucherwang.github.io//
 date_format: "ordinal"
 title: CaucherWang(Yuzu) 
-subtitle: "Caucher Wang's Techblog"
+subtitle: "柚子的Techblog"
 description: "A computer science student's personal blog, including what I've thought, learned from work and study.You can contact me with my working email, caucherw@gmail.com. "
 keywords: fdu, computer science, learning log
 timezone: Asia/Shanghai
