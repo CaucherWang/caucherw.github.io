@@ -163,17 +163,7 @@ log-store分两种，有序的，无序的
 
 插入到区间树的区间变小了，甚至被前一个区间所包含的区间干脆不insert到区间树里
 
-**<u>这里原文中有一句话没有读懂</u>**：
-
-------
-
-For the interval tree, the lengths of inserted intervals are reduced. S<u>maller intervals will be pushed closer to the leaf nodes, thereby reducing the size of upper-level nodes cached in memory.  Although in case (d) two intervals are inserted, the total length becomes smaller</u>
-
-为什么说小区间插入到区间树上就会贴近叶子节点，贴近叶子结点为什么可以减少内存中缓存的高层节点，缓存到内存的只有高层节点么，B+树和区间树不可以整个放进内存里么？
-
-------
-
-进一步，我们未必要用前面的一个，如果前面k个CR-record已经覆盖一定范围，那么只把范围之外的放进树里即可，而不必非要是前一个
+进一步，我们未必要用前面的一个，比如我们把第一个区间插入，那么后续的k个区间中如果某个的区间被第一个完全覆盖住了，那我就不再加了；如果某个区间部分覆盖，那我只把差量的区间插入到树中；
 
 ==算法1：如何对优化过的索引树（B+,区间）进行查询==
 
@@ -193,10 +183,9 @@ for each entry e in tree:
 return result;
 ```
 
-对这个算法有一些==疑点1==：
+这里的entry是说在索引树已经扫描一遍，找到了在优化过的索引树中overlap的节点，这里称作是entry
 
-1. 第8行的判断条件：可以保证无疏漏，但是会导致重复判断与磁盘搜索，因为下一个overlap的CR-record也有可能只是部分的重合前一个，它在B+树上也有entry，在B+树上遍历时也会遍历到，再次进行磁盘搜索，这就会导致重复。尤其是当K=k时，这种重复将更加明显。
-2. 优化的区间树索引结构，还没有完全弄清楚
+对于overlap的节点中的每一个，在CR-Log里面定位并扫描之后的k个CR-record检查overlap.
 
 ------
 
@@ -304,7 +293,7 @@ $$
 $$
 COST=T_{seek}*N_{seq}+T_{trans}*B
 $$
-==疑问2==：文中认为这是至多消耗的代价，我认为这里是平均代价，因为路径长度，序列数都是期望值，后续不可能是最大值
+==PS==：文中认为这是至多消耗的代价，我认为这里是平均代价，因为路径长度，序列数都是期望值，后续不可能是最大值
 
 ### 4.5.3 存储代价 VS 查询表现
 
@@ -320,24 +309,14 @@ $$
 
 ### 4.6.2 主键属性参与到多属性查询中
 
-一个问题就是其它属性可能有CR-index，主键的主索引可能是只有checkpoint list这种直接对接到record的索引，于是产生两种选择：
+一个问题就是其它属性可能有CR-index，主键的主索引可能是只有checkpoint list这种直接对接到record的索引，于是产生两种情况：
 
-1. 先用主索引把符合主键限制的fetch出来，再根据其它属性的查询范围进行筛选
-2. 先用CR-index把符合非主键属性查询范围的data block fetch出来，再根据主键限制进行筛选
+1. 主键中不同的值没有很多，那么就可以给主键加一个CR-index然后查询。
+2. 如果主键中不同的值很多，又有以下两种选择：
+   1. 先用主索引把符合主键限制的fetch出来，再根据其它属性的查询范围进行筛选
+   2. 先用CR-index把符合非主键属性查询范围的data block fetch出来，再根据主键限制进行筛选
 
 当符合条件的data block不多的时候，我们优先选择第二种选择，以避免大面积磁盘搜索。
-
-这里有一句话没理解:
-
-==疑问3：文中所说distinct keys, boundary-pair分别指的是什么==
-
-------
-
-There is a second type of multi-attribute query, which includes a constraint on primary-key attributes, e.g., the retrieval of data from a speciﬁc sensor for a time period besides a range of salinity. **<u>If the number of distinct keys that will be retrieved is limited, an additional boundary-pair can be added for each such key</u>** They further ﬁlter CR-records before fetching blocks. I**<u>n the worst case where there are an excessive number of distinct keys, we still have two choices in execution:</u>**
-
-------
-
-
 
 # 5. 实验结果
 
