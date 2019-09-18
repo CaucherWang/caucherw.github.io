@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 文献阅读：Lightweight Index of Observational Data in Log-Structured Storage 
-categories: Times Series Database
+categories: Times-Series-Database
 description: 基于日志结构存储的轻量级时间序列数据索引
 keywords: index,observational data,lightweight,log-structured storage 
 ---
